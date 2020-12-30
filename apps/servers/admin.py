@@ -1,0 +1,54 @@
+from django.utils import timezone
+from django.contrib import admin, messages
+from django.shortcuts import redirect
+from django.urls import path, reverse
+from django.utils.html import format_html
+from django.utils.translation import ugettext_lazy as _
+
+from .models import Server, PublicIP
+from .utils import get_instance_state
+from .tasks import restart_server
+
+
+@admin.register(PublicIP)
+class PublicIPAdmin(admin.ModelAdmin):
+    list_display = ('ip', 'server', 'created_time')
+    search_fields = ('ip', 'server__name')
+    ordering = ('-created_time',)
+    date_hierarchy = 'created_time'
+
+
+@admin.register(Server)
+class ServerAdmin(admin.ModelAdmin):
+    list_display = ('name', 'id', 'active_ip', 'is_enable', 'created_time', 'updated_time', 'status', 'server_actions')
+    list_filter = ('is_enable',)
+    search_fields = ('name', 'active_ip')
+
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            path('<int:server_id>/restart/', self.admin_site.admin_view(self.restart), name="server-restart"),
+
+        ]
+        return custom_urls + urls
+
+    def server_actions(self, obj):
+        return format_html(
+            '<a class="button" href="{}">Restart</a>',
+            reverse('admin:server-restart', args=[obj.pk])
+        )
+
+    server_actions.short_description = _('actions')
+    server_actions.allow_tags = True
+
+    def restart(self, request, server_id):
+        server = Server.objects.get(id=server_id)
+        state = get_instance_state(server)
+        if state == Server.STATUS_RUNNING and (timezone.now() - server.updated_time).seconds > 300:
+            server.status = Server.STATUS_PENDING
+            server.save()
+            restart_server.delay(server_id)
+        else:
+            messages.error(request, f'server can not be restarted! state: {state}')
+
+        return redirect(f"admin:servers_server_changelist")
