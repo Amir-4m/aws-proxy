@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'apps.servers',
     'apps.dns',
     'apps.proxies',
+    'apps.inspectors',
 
     'import_export',
     'django_celery_beat',
