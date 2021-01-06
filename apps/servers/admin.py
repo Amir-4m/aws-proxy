@@ -20,7 +20,12 @@ class PublicIPAdmin(admin.ModelAdmin):
 
 @admin.register(Server)
 class ServerAdmin(admin.ModelAdmin):
-    list_display = ('name', 'id', 'active_ip', 'is_enable', 'created_time', 'updated_time', 'status', 'server_actions')
+    list_display = (
+        'name', 'id', 'active_ip',
+        'is_enable', 'created_time',
+        'updated_time', 'aws_status',
+        'connection_status', 'server_actions'
+    )
     list_filter = ('is_enable',)
     search_fields = ('name', 'active_ip')
 

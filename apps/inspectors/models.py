@@ -1,6 +1,9 @@
+from datetime import timedelta
+
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+from apps.inspectors.utils.jwt import jwt_payload_handler, jwt_encode_handler
 from apps.servers.models import Server
 
 
@@ -12,6 +15,16 @@ class Inspector(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_payload(self):
+        payload = {
+            'inspector_id': self.id,
+            'exp': self.created_time.utcnow() + timedelta(days=10 * 365)
+        }
+        return jwt_payload_handler(payload)
+
+    def get_jwt_token(self):
+        return jwt_encode_handler(self.get_payload())
 
 
 class InspectedServer(models.Model):
