@@ -14,3 +14,4 @@ PyJWT==1.7.1
 boto3
 ip2geotools
 python-decouple
+django-admin-json-editor

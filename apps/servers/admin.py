@@ -5,6 +5,7 @@ from django.urls import path, reverse
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 
+from .forms import ServerModelAdminForm
 from .models import Server, PublicIP
 from .utils import get_instance_state
 from .tasks import restart_server
@@ -28,6 +29,7 @@ class ServerAdmin(admin.ModelAdmin):
     )
     list_filter = ('is_enable',)
     search_fields = ('name', 'active_ip')
+    form = ServerModelAdminForm
 
     def get_urls(self):
         urls = super().get_urls()

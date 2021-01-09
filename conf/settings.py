@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'apps.proxies',
     'apps.inspectors',
 
+    'django_admin_json_editor',
     'import_export',
     'django_celery_beat',
     'rest_framework',
