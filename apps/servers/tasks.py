@@ -16,7 +16,7 @@ def get_server_ip_async(server_id):
     logger.info(f'[message: getting IP]-[server_id: {server_id}]-[state: {state}]')
     if state == 'running':
         get_server_ip(server)
-        server.status = Server.STATUS_RUNNING
+        server.status = Server.AWS_STATUS_RUNNING
         server.save()
     elif state == 'pending':
         logger.warning(f'[message: state was not running in starting server]-[server_id: {server_id}]')
@@ -30,12 +30,12 @@ def start_server_async(server_id):
     server = Server.objects.get(id=server_id)
     state = get_instance_state(server)
     logger.info(f'[message: starting server]-[server_id: {server.id}]-[state: {state}]')
-    if state == Server.STATUS_STOPPED:
+    if state == Server.AWS_STATUS_STOPPED:
         start_server(server)
-        server.status = Server.STATUS_PENDING
+        server.status = Server.AWS_STATUS_PENDING
         server.save()
         get_server_ip_async.apply_async(args=(server.id,), countdown=40)
-    elif state == Server.STATUS_STOPPING:
+    elif state == Server.AWS_STATUS_STOPPING:
         logger.warning(f'[message: state was in starting server]-[server_id: {server.id}]')
         start_server_async.apply_async(args=(server.id,), countdown=60)
 
@@ -53,14 +53,14 @@ def restart_server(server_id):
         server = Server.objects.select_for_update().get(id=server_id)
         state = get_instance_state(server)
         logger.info(f'[message: restarting server]-[server_id: {server_id}]-[state: {state}]')
-        if state == Server.STATUS_RUNNING:
+        if state == Server.AWS_STATUS_RUNNING:
             stop_server(server)
-            server.status = Server.STATUS_STOPPED
+            server.status = Server.AWS_STATUS_STOPPED
             server.save()
             start_server_async.delay(server.id)
-        elif state == Server.STATUS_STOPPED:
+        elif state == Server.AWS_STATUS_STOPPED:
             start_server_async.delay(server.id)
-        elif state == Server.STATUS_STOPPING:
+        elif state == Server.AWS_STATUS_STOPPING:
             start_server_async.apply_async(args=(server.id,), countdown=60)
         else:
             logger.warning(

@@ -21,7 +21,7 @@ class PublicIPAdmin(admin.ModelAdmin):
 @admin.register(Server)
 class ServerAdmin(admin.ModelAdmin):
     list_display = (
-        'name', 'id', 'active_ip',
+        'name', 'active_ip',
         'is_enable', 'created_time',
         'updated_time', 'aws_status',
         'connection_status', 'server_actions'
@@ -49,8 +49,8 @@ class ServerAdmin(admin.ModelAdmin):
     def restart(self, request, server_id):
         server = Server.objects.get(id=server_id)
         state = get_instance_state(server)
-        if state == Server.STATUS_RUNNING and (timezone.now() - server.updated_time).seconds > 300:
-            server.status = Server.STATUS_PENDING
+        if state == Server.AWS_STATUS_RUNNING and (timezone.now() - server.updated_time).seconds > 300:
+            server.status = Server.AWS_STATUS_PENDING
             server.save()
             restart_server.delay(server_id)
         else:
