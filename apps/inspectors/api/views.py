@@ -1,8 +1,15 @@
 from rest_framework.generics import get_object_or_404
+from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from ..models import Inspector
+from apps.servers.models import Server
+from apps.servers.api.serializers import ServerSerializer
+
+from .authentications import InspectorJWTAuthentication
+from .permissions import InspectorPermission
+from .serializers import InspectedServerSerializer
+from ..models import Inspector, InspectedServer
 
 
 class ObtainTokenAPIView(APIView):
@@ -22,3 +29,20 @@ class ObtainTokenAPIView(APIView):
         )
 
         return Response({"token": service.get_jwt_token()})
+
+
+class InquiryServersAPIView(generics.ListAPIView):
+    queryset = Server.objects.filter(connection_status=Server.CONNECTION_STATUS_CHECK)
+    authentication_classes = (InspectorJWTAuthentication,)
+    permission_classes = (InspectorPermission,)
+    serializer_class = ServerSerializer
+
+
+class InspectedServersAPIView(generics.CreateAPIView):
+    queryset = InspectedServer.objects.all()
+    authentication_classes = (InspectorJWTAuthentication,)
+    permission_classes = (InspectorPermission,)
+    serializer_class = InspectedServerSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(inspector=self.request.auth['inspector'])

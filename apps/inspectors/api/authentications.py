@@ -24,7 +24,6 @@ class InspectorJWTAuthentication(BaseAuthentication):
         auth_header_prefix = 'jwt'
         if not auth or smart_text(auth[0].lower()) != auth_header_prefix:
             return None
-        print(auth)
         if len(auth) == 1:
             msg = _('Invalid Authorization header. No credentials provided.')
             raise exceptions.AuthenticationFailed(msg)
