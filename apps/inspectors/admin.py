@@ -1,11 +1,10 @@
 from django.contrib import admin
-from django.http import HttpResponseRedirect
 
 from .models import Inspector, InspectedServer
 
 
 @admin.register(Inspector)
-class TesterModelAdmin(admin.ModelAdmin):
+class InspectorModelAdmin(admin.ModelAdmin):
     list_display = ('name', 'is_enable', 'created_time', 'updated_time', 'token')
     list_filter = ('is_enable',)
 
