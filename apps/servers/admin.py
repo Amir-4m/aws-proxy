@@ -28,6 +28,7 @@ class ServerAdmin(admin.ModelAdmin):
         'connection_status', 'server_actions'
     )
     list_filter = ('is_enable',)
+    readonly_fields = ('hash_key',)
     search_fields = ('name', 'active_ip')
     form = ServerModelAdminForm
 
