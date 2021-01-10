@@ -1,5 +1,5 @@
 from django import forms
-from django_admin_json_editor import JSONEditorWidget
+from jsoneditor.forms import JSONEditor
 
 from apps.servers.models import Server
 
@@ -9,5 +9,5 @@ class ServerModelAdminForm(forms.ModelForm):
         model = Server
         fields = '__all__'
         widgets = {
-            'properties': JSONEditorWidget({}, collapsed=False),
+            'properties': JSONEditor,
         }

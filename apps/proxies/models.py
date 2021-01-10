@@ -1,5 +1,3 @@
-import uuid
-
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -7,16 +5,28 @@ from apps.dns.models import DomainNameRecord
 from apps.servers.models import Server
 
 
+class ProxyManager(models.Manager):
+    def has_domain(self):
+        return self.filter(host__iregex=r'^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\.[a-zA-Z]{2,}$')
+
+    def has_ip(self):
+        return self.filter(host__iregex=r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$")
+
+
 class Proxy(models.Model):
     created_time = models.DateTimeField(_('created time'), auto_now_add=True)
     updated_time = models.DateTimeField(_('updated time'), auto_now=True)
-    hash_key = models.UUIDField(default=uuid.uuid4)
-    name_server = models.ForeignKey(DomainNameRecord, on_delete=models.CASCADE, related_name='proxies')
-    server = models.ForeignKey(Server, on_delete=models.CASCADE, related_name='proxies', null=True)
-    host = models.CharField(_('host'), max_length=32, null=True, blank=True)
+    server = models.ForeignKey(Server, on_delete=models.CASCADE, related_name='proxies')
+    host = models.CharField(_('host'), max_length=250)
     port = models.IntegerField(_('port'))
     secret_key = models.CharField(max_length=32)
     is_enable = models.BooleanField(default=True)
+    objects = ProxyManager()
+
+    class Meta:
+        verbose_name = _('Proxy')
+        verbose_name_plural = _('Proxies')
+        unique_together = ('host', 'port')
 
     def __str__(self):
-        return self.id
+        return f'{self.id} - {self.host}:{self.port}'

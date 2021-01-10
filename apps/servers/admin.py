@@ -5,10 +5,17 @@ from django.urls import path, reverse
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 
+from apps.proxies.models import Proxy
+
 from .forms import ServerModelAdminForm
 from .models import Server, PublicIP
 from .utils import get_instance_state
 from .tasks import restart_server
+
+
+class ProxyInlineAdmin(admin.TabularInline):
+    model = Proxy
+    extra = 1
 
 
 @admin.register(PublicIP)
@@ -17,6 +24,12 @@ class PublicIPAdmin(admin.ModelAdmin):
     search_fields = ('ip', 'server__name')
     ordering = ('-created_time',)
     date_hierarchy = 'created_time'
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
 
 
 @admin.register(Server)
@@ -31,6 +44,7 @@ class ServerAdmin(admin.ModelAdmin):
     readonly_fields = ('hash_key',)
     search_fields = ('name', 'active_ip')
     form = ServerModelAdminForm
+    inlines = (ProxyInlineAdmin,)
 
     def get_urls(self):
         urls = super().get_urls()

@@ -17,3 +17,9 @@ class DomainZoneAdmin(admin.ModelAdmin):
 @admin.register(DNSUpdateLog)
 class DNSUpdateLogAdmin(admin.ModelAdmin):
     list_display = ['ip', 'domain_record', 'created_time']
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False

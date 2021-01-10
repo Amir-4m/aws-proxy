@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'apps.proxies',
     'apps.inspectors',
 
-    'django_admin_json_editor',
+    'jsoneditor',
     'import_export',
     'django_celery_beat',
     'rest_framework',
@@ -194,6 +194,8 @@ LOGGING = ({
 
 # IMPORT_EXPORT_USE_TRANSACTIONS = True
 # IMPORT_EXPORT_SKIP_ADMIN_LOG = True
+JSON_EDITOR_JS = 'https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/8.6.4/jsoneditor.js'
+JSON_EDITOR_CSS = 'https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/8.6.4/jsoneditor.css'
 
 CLOUDFLARE_EMAIL = config('CLOUDFLARE_EMAIL')
 CLOUDFLARE_API_KEY = config('CLOUDFLARE_API_KEY')
