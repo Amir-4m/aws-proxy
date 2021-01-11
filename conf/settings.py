@@ -199,3 +199,5 @@ JSON_EDITOR_CSS = 'https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/8.6.4/jsone
 
 CLOUDFLARE_EMAIL = config('CLOUDFLARE_EMAIL')
 CLOUDFLARE_API_KEY = config('CLOUDFLARE_API_KEY')
+
+SERVER_EXPIRY_TIME = config('SERVER_EXPIRY_MINUTE', default=60)

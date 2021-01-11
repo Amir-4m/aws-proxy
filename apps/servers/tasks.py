@@ -1,6 +1,8 @@
 import logging
 
 from celery import shared_task
+from celery.schedules import crontab
+from celery.task import periodic_task
 from django.db import transaction
 
 from .models import Server
@@ -66,3 +68,13 @@ def restart_server(server_id):
             logger.warning(
                 f'[message: restarting server canceled due to server state]-[server_id: {server_id}]-[state:{state}]'
             )
+
+
+@periodic_task(run_every=(crontab(minute='*/30')))
+def update_servers_to_check():
+    server = Server.objects.filter(connection_status=Server.CONNECTION_STATUS_ACTIVE, is_enable=True).order_by(
+        'updated_time'
+    ).first()
+
+    server.connection_status = Server.CONNECTION_STATUS_ACTIVE
+    server.save()
