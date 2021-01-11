@@ -45,4 +45,5 @@ class InspectedServersAPIView(generics.CreateAPIView):
     serializer_class = InspectedServerSerializer
 
     def perform_create(self, serializer):
-        serializer.save(inspector=self.request.auth['inspector'])
+        inspector = Inspector.objects.get(id=self.request.auth['inspector_id'])
+        serializer.save(inspector=inspector)

@@ -6,5 +6,5 @@ from ..models import InspectedServer
 class InspectedServerSerializer(serializers.ModelSerializer):
     class Meta:
         model = InspectedServer
-        fields = '__all__'
+        exclude = ('inspector',)
 

@@ -12,3 +12,10 @@ class InspectorModelAdmin(admin.ModelAdmin):
 
     def token(self, obj):
         return obj.get_jwt_token()
+
+
+@admin.register(InspectedServer)
+class InspectedServerModelAdmin(admin.ModelAdmin):
+    list_display = ('inspector', 'server', 'hash_key', 'is_active', 'created_time')
+    search_fields = ('hash_key',)
+    list_filter = ('server', 'is_active')
