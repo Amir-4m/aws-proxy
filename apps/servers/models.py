@@ -11,8 +11,8 @@ class Server(models.Model):
     AWS_STATUS_RUNNING = 'running'
     AWS_STATUS_PENDING = 'pending'
 
-    CONNECTION_STATUS_ACTIVE = 'check'
-    CONNECTION_STATUS_CHECK = 'active'
+    CONNECTION_STATUS_ACTIVE = 'active'
+    CONNECTION_STATUS_CHECK = 'check'
     CONNECTION_STATUS_DEACTIVATED = 'deactivated'
 
     AWS_STATUS_CHOICES = [
