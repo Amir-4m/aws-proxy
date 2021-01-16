@@ -72,7 +72,7 @@ def restart_server(server_id):
             )
 
 
-@periodic_task(run_every=(crontab(minute='*/30')))
+@periodic_task(run_every=(crontab(minute='*/10')))
 def update_servers_to_check():
     server = Server.objects.filter(connection_status=Server.CONNECTION_STATUS_ACTIVE, is_enable=True).order_by(
         'updated_time'
