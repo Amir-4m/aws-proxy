@@ -39,7 +39,7 @@ class Server(models.Model):
         default=CONNECTION_STATUS_ACTIVE
     )
     is_enable = models.BooleanField(_('enabled?'))
-    hash_key = models.UUIDField(default=uuid.uuid4)
+    hash_key = models.UUIDField(default=uuid.uuid4, editable=False)
     properties = JSONField(_('properties'), default=dict)
 
     def __init__(self, *args, **kwargs):

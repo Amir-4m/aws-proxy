@@ -8,11 +8,10 @@ from .models import InspectedServer, Inspector
 from ..servers.tasks import restart_server
 
 
-@periodic_task(run_every=(crontab(minute='*/30')))
+@periodic_task(run_every=(crontab(minute='*')))
 def check_server_connection_analyses():
     inspectors = Inspector.objects.filter(is_enable=True)
-    for server in Server.objects.filter(connection_status=Server.CONNECTION_STATUS_CHECK, is_enable=True).order_by(
-            'updated_time'):
+    for server in Server.objects.filter(connection_status=Server.CONNECTION_STATUS_CHECK, is_enable=True)
         inspected_servers = InspectedServer.objects.filter(hash_key=server.hash_key)
         if inspectors.count() == inspected_servers.count():
             if all(inspected_servers.values_list('is_active', flat=True)):
@@ -22,5 +21,5 @@ def check_server_connection_analyses():
                 restart_server.delay(server.id)
 
         else:
-            if (timezone.now() - server.updated_time).total_seconds() // 60 > settings.SERVER_EXPIRY_TIME:
+            if (timezone.now() - server.updated_time).total_seconds() > settings.SERVER_EXPIRY_TIME * 60:
                 restart_server.delay(server.id)
