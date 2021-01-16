@@ -39,8 +39,12 @@ class Server(models.Model):
         default=CONNECTION_STATUS_ACTIVE
     )
     is_enable = models.BooleanField(_('enabled?'))
-    hash_key = models.UUIDField(default=uuid.uuid4, editable=False)
+    hash_key = models.UUIDField(default=uuid.uuid4)
     properties = JSONField(_('properties'), default=dict)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._b_connection_status = self.connection_status
 
     def active_ip(self):
         return getattr(
@@ -51,6 +55,11 @@ class Server(models.Model):
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        if self.connection_status != self._b_connection_status and self.connection_status == self.CONNECTION_STATUS_CHECK:
+            self.hash_key = uuid.uuid4()
+        super(Server, self).save(*args, **kwargs)
 
 
 class PublicIP(models.Model):
