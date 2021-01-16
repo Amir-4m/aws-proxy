@@ -11,7 +11,7 @@ class Inspector(models.Model):
     created_time = models.DateTimeField(_('created time'), auto_now_add=True)
     updated_time = models.DateTimeField(_('updated time'), auto_now=True)
     name = models.CharField(_('name'), max_length=120)
-    is_enable = models.BooleanField(_('is enable'), default=True)
+    is_enable = models.BooleanField(_('enabled?'), default=True)
 
     def __str__(self):
         return self.name
@@ -32,7 +32,7 @@ class InspectedServer(models.Model):
     inspector = models.ForeignKey(Inspector, on_delete=models.CASCADE, related_name='inspected_servers')
     server = models.ForeignKey(Server, on_delete=models.CASCADE, related_name='inspected_servers')
     hash_key = models.UUIDField(_('hash key'))
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(_('active?'))
 
     def __str__(self):
         return f'{self.inspector} - {self.server}'

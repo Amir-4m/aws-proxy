@@ -7,10 +7,11 @@ from apps.servers.models import Server
 
 class ProxyManager(models.Manager):
     def has_domain(self):
-        return self.filter(host__iregex=r'^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\.[a-zA-Z]{2,}$')
+        return self.exclude(host__regex=r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$")
+        # return self.filter(host__iregex=r'^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\.[a-zA-Z]{2,}$')
 
     def has_ip(self):
-        return self.filter(host__iregex=r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$")
+        return self.filter(host__regex=r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$")
 
 
 class Proxy(models.Model):
@@ -19,8 +20,8 @@ class Proxy(models.Model):
     server = models.ForeignKey(Server, on_delete=models.CASCADE, related_name='proxies')
     host = models.CharField(_('host'), max_length=250)
     port = models.IntegerField(_('port'))
-    secret_key = models.CharField(max_length=32)
-    is_enable = models.BooleanField(default=True)
+    secret_key = models.TextField(_('secret'))
+    is_enable = models.BooleanField(_('enabled?'))
     objects = ProxyManager()
 
     class Meta:
@@ -29,4 +30,4 @@ class Proxy(models.Model):
         unique_together = ('host', 'port')
 
     def __str__(self):
-        return f'{self.id} - {self.host}:{self.port}'
+        return f'{self.host}:{self.port}'
