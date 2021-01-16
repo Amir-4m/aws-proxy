@@ -32,31 +32,31 @@ class Server(models.Model):
     created_time = models.DateTimeField(_("created time"), auto_now_add=True)
     updated_time = models.DateTimeField(_("updated time"), auto_now=True)
     name = models.CharField(_('name'), max_length=120)
-    properties = JSONField(_('properties'), default=dict)
     aws_status = models.CharField(max_length=10, choices=AWS_STATUS_CHOICES)
-    hash_key = models.UUIDField(default=uuid.uuid4)
     connection_status = models.CharField(
         max_length=11,
         choices=CONNECTION_STATUS_CHOICES,
         default=CONNECTION_STATUS_ACTIVE
     )
-    is_enable = models.BooleanField(default=True, editable=False)
+    is_enable = models.BooleanField(_('enabled?'))
+    hash_key = models.UUIDField(default=uuid.uuid4, editable=False)
+    properties = JSONField(_('properties'), default=dict)
 
     def active_ip(self):
         return getattr(
-            self.public_ips.all().order_by('-created_time').first(),
+            self.public_ips.all().order_by('-pk').first(),
             'ip',
             '-'
         )
 
     def __str__(self):
-        return f"server {self.name}"
+        return self.name
 
 
 class PublicIP(models.Model):
     created_time = models.DateTimeField(_("created time"), auto_now_add=True)
-    ip = models.GenericIPAddressField(protocol='IPv4')
     server = models.ForeignKey(Server, on_delete=models.PROTECT, related_name='public_ips')
+    ip = models.GenericIPAddressField(protocol='IPv4')
 
     def __str__(self):
-        return f"{self.server} with public ip {self.ip}"
+        return f"{self.ip} > server: {self.server_id}"
