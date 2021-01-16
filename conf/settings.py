@@ -29,13 +29,6 @@ SECRET_KEY = config("SECRET_KEY")
 
 # Application definition
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-
     'apps.servers',
     'apps.dns',
     'apps.proxies',
@@ -43,8 +36,14 @@ INSTALLED_APPS = [
 
     'jsoneditor',
     'import_export',
-    'django_celery_beat',
     'rest_framework',
+
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
 ]
 
 MIDDLEWARE = [
