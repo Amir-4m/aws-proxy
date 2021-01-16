@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 
 
 def get_instance_state(server):
-    server_name = server.name
+    server_name = server.properties.get('name')
     server_access_key = server.properties.get('access_key')
     server_secret_key = server.properties.get('secret_key')
     server_region = server.properties.get('region')
@@ -23,7 +23,7 @@ def get_instance_state(server):
 
 
 def start_server(server):
-    server_name = server.name
+    server_name = server.properties.get('name')
     server_access_key = server.properties.get('access_key')
     server_secret_key = server.properties.get('secret_key')
     server_region = server.properties.get('region')
@@ -37,7 +37,7 @@ def start_server(server):
 
 
 def stop_server(server):
-    server_name = server.name
+    server_name = server.properties.get('name')
     server_access_key = server.properties.get('access_key')
     server_secret_key = server.properties.get('secret_key')
     server_region = server.properties.get('region')
@@ -50,7 +50,7 @@ def stop_server(server):
 
 
 def get_server_ip(server):
-    server_name = server.name
+    server_name = server.properties.get('name')
     server_access_key = server.properties.get('access_key')
     server_secret_key = server.properties.get('secret_key')
     server_region = server.properties.get('region')
