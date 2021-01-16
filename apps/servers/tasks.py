@@ -77,6 +77,6 @@ def update_servers_to_check():
     server = Server.objects.filter(connection_status=Server.CONNECTION_STATUS_ACTIVE, is_enable=True).order_by(
         'updated_time'
     ).first()
-
-    server.connection_status = Server.CONNECTION_STATUS_ACTIVE
-    server.save()
+    if server is not None:
+        server.connection_status = Server.CONNECTION_STATUS_CHECK
+        server.save()

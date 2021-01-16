@@ -19,8 +19,8 @@ def check_server_connection_analyses():
                 server.connection_status = Server.CONNECTION_STATUS_ACTIVE
                 server.save()
             else:
-                restart_server.delay()
+                restart_server.delay(server.id)
 
         else:
             if (timezone.now() - server.updated_time).total_seconds() // 60 > settings.SERVER_EXPIRY_TIME:
-                restart_server.delay()
+                restart_server.delay(server.id)
