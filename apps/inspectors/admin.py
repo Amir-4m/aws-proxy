@@ -19,3 +19,9 @@ class InspectedServerModelAdmin(admin.ModelAdmin):
     list_display = ('inspector', 'server', 'hash_key', 'is_active', 'created_time')
     search_fields = ('hash_key',)
     list_filter = ('server', 'is_active', 'inspector')
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
