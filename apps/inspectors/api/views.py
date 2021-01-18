@@ -1,3 +1,5 @@
+from django.utils import timezone
+
 from rest_framework.generics import get_object_or_404
 from rest_framework import generics
 from rest_framework.views import APIView
@@ -34,7 +36,8 @@ class ObtainTokenAPIView(APIView):
 class InquiryServersAPIView(generics.ListAPIView):
     queryset = Server.objects.filter(
         connection_status=Server.CONNECTION_STATUS_CHECK,
-        aws_status=Server.AWS_STATUS_RUNNING
+        aws_status=Server.AWS_STATUS_RUNNING,
+        updated_time__lt=timezone.now() - timezone.timedelta(minutes=10)
     )
     authentication_classes = (InspectorJWTAuthentication,)
     permission_classes = (InspectorPermission,)
