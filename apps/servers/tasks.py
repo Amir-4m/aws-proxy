@@ -18,8 +18,7 @@ def get_server_ip_async(server_id):
     logger.info(f'[message: getting IP]-[server_id: {server_id}]-[state: {state}]')
     if state == 'running':
         get_server_ip(server)
-        server.status = Server.AWS_STATUS_RUNNING
-        server.connection_status = Server.CONNECTION_STATUS_CHECK
+        server.aws_status = Server.AWS_STATUS_RUNNING
         server.save()
     elif state == 'pending':
         logger.warning(f'[message: state was not running in starting server]-[server_id: {server_id}]')
@@ -35,7 +34,7 @@ def start_server_async(server_id):
     logger.info(f'[message: starting server]-[server_id: {server.id}]-[state: {state}]')
     if state == Server.AWS_STATUS_STOPPED:
         start_server(server)
-        server.status = Server.AWS_STATUS_PENDING
+        server.aws_status = Server.AWS_STATUS_PENDING
         server.save()
         get_server_ip_async.apply_async(args=(server.id,), countdown=40)
     elif state == Server.AWS_STATUS_STOPPING:
@@ -58,8 +57,7 @@ def restart_server(server_id):
         logger.info(f'[message: restarting server]-[server_id: {server_id}]-[state: {state}]')
         if state == Server.AWS_STATUS_RUNNING:
             stop_server(server)
-            server.connection_status = Server.CONNECTION_STATUS_DEACTIVATED
-            server.status = Server.AWS_STATUS_STOPPED
+            server.aws_status = Server.AWS_STATUS_STOPPED
             server.save()
             start_server_async.delay(server.id)
         elif state == Server.AWS_STATUS_STOPPED:

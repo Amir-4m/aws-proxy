@@ -48,7 +48,7 @@ class Server(models.Model):
 
     def active_ip(self):
         return getattr(
-            self.public_ips.all().order_by('-pk').first(),
+            self.server_logs.all().order_by('-pk').first(),
             'ip',
             '-'
         )
@@ -62,10 +62,13 @@ class Server(models.Model):
         super(Server, self).save(*args, **kwargs)
 
 
-class PublicIP(models.Model):
+class ServerLog(models.Model):
     created_time = models.DateTimeField(_("created time"), auto_now_add=True)
-    server = models.ForeignKey(Server, on_delete=models.PROTECT, related_name='public_ips')
+    server = models.ForeignKey(Server, on_delete=models.PROTECT, related_name='server_logs')
     ip = models.GenericIPAddressField(protocol='IPv4')
+
+    class Meta:
+        db_table = 'servers_publicip'
 
     def __str__(self):
         return f"{self.ip} > server: {self.server_id}"

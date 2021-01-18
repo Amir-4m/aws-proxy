@@ -8,7 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 from apps.proxies.models import Proxy
 
 from .forms import ServerModelAdminForm
-from .models import Server, PublicIP
+from .models import Server, ServerLog
 from .utils import get_instance_state
 from .tasks import restart_server
 
@@ -18,8 +18,8 @@ class ProxyInlineAdmin(admin.TabularInline):
     extra = 1
 
 
-@admin.register(PublicIP)
-class PublicIPAdmin(admin.ModelAdmin):
+@admin.register(ServerLog)
+class ServerLogAdmin(admin.ModelAdmin):
     list_display = ('ip', 'server', 'created_time')
     search_fields = ('ip', 'server__name')
     ordering = ('-created_time',)
@@ -67,7 +67,7 @@ class ServerAdmin(admin.ModelAdmin):
         server = Server.objects.get(id=server_id)
         state = get_instance_state(server)
         if state == Server.AWS_STATUS_RUNNING and (timezone.now() - server.updated_time).seconds > 300:
-            server.status = Server.AWS_STATUS_PENDING
+            server.aws_status = Server.AWS_STATUS_PENDING
             server.save()
             restart_server.delay(server_id)
         else:

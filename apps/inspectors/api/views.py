@@ -8,8 +8,8 @@ from apps.servers.api.serializers import ServerSerializer
 
 from .authentications import InspectorJWTAuthentication
 from .permissions import InspectorPermission
-from .serializers import InspectedServerSerializer
-from ..models import Inspector, InspectedServer
+from .serializers import InspectorLogSerializer
+from ..models import Inspector, InspectorLog
 
 
 class ObtainTokenAPIView(APIView):
@@ -38,11 +38,11 @@ class InquiryServersAPIView(generics.ListAPIView):
     serializer_class = ServerSerializer
 
 
-class InspectedServersAPIView(generics.CreateAPIView):
-    queryset = InspectedServer.objects.all()
+class InspectorLogAPIView(generics.CreateAPIView):
+    queryset = InspectorLog.objects.all()
     authentication_classes = (InspectorJWTAuthentication,)
     permission_classes = (InspectorPermission,)
-    serializer_class = InspectedServerSerializer
+    serializer_class = InspectorLogSerializer
 
     def perform_create(self, serializer):
         inspector = Inspector.objects.get(id=self.request.auth['inspector_id'])
