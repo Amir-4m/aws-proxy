@@ -8,7 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 from apps.proxies.models import Proxy
 
 from .forms import ServerModelAdminForm
-from .models import Server, PublicIP
+from .models import Server, ServerLog
 from .utils import get_instance_state
 from .tasks import restart_server
 
@@ -18,7 +18,7 @@ class ProxyInlineAdmin(admin.TabularInline):
     extra = 1
 
 
-@admin.register(PublicIP)
+@admin.register(ServerLog)
 class ServerLogAdmin(admin.ModelAdmin):
     list_display = ('ip', 'server', 'created_time')
     search_fields = ('ip', 'server__name')

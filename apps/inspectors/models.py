@@ -27,7 +27,7 @@ class Inspector(models.Model):
         return jwt_encode_handler(self.get_payload())
 
 
-class InspectedServer(models.Model):
+class InspectorLog(models.Model):
     created_time = models.DateTimeField(_('created time'), auto_now_add=True)
     inspector = models.ForeignKey(Inspector, on_delete=models.CASCADE, related_name='inspector_logs')
     server = models.ForeignKey(Server, on_delete=models.CASCADE, related_name='inspector_logs')
