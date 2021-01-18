@@ -56,9 +56,12 @@ class Server(models.Model):
     def __str__(self):
         return self.name
 
+    def change_hash_key(self):
+        self.hash_key = uuid.uuid4()
+
     def save(self, *args, **kwargs):
         if self.connection_status != self._b_connection_status and self.connection_status == self.CONNECTION_STATUS_CHECK:
-            self.hash_key = uuid.uuid4()
+            self.change_hash_key()
         super(Server, self).save(*args, **kwargs)
 
 
