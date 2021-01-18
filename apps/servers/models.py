@@ -62,7 +62,7 @@ class Server(models.Model):
         super(Server, self).save(*args, **kwargs)
 
 
-class PublicIP(models.Model):
+class ServerLog(models.Model):
     created_time = models.DateTimeField(_("created time"), auto_now_add=True)
     server = models.ForeignKey(Server, on_delete=models.PROTECT, related_name='server_logs')
     ip = models.GenericIPAddressField(protocol='IPv4')
