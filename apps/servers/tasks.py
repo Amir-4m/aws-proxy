@@ -73,7 +73,8 @@ def restart_server(server_id):
 @periodic_task(run_every=(crontab(minute='*/10')))
 def update_servers_to_check():
     server = Server.objects.filter(
-        connection_status=Server.CONNECTION_STATUS_ACTIVE, 
+        connection_status=Server.CONNECTION_STATUS_ACTIVE,
+        aws_status=Server.AWS_STATUS_RUNNING,
         is_enable=True
     ).order_by(
         'updated_time', 

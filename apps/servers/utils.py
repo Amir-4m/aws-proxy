@@ -1,7 +1,7 @@
 import logging
 
 from apps.api.aws import AmazonWebServiceAPI
-from .models import Server, ServerLog
+from .models import Server, PublicIP
 
 logger = logging.getLogger(__name__)
 
@@ -58,7 +58,7 @@ def get_server_ip(server):
     try:
         api = AmazonWebServiceAPI(server_name, server_access_key, server_secret_key, server_region)
         ip = api.get_server_ip()
-        ServerLog.objects.create(ip=ip, server=server)
+        PublicIP.objects.create(ip=ip, server=server)
     except Exception as e:
         logger.error(f'[message: getting server ip error {e}]-[server_id: {server.id}]')
         raise

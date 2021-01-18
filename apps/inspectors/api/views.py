@@ -9,7 +9,7 @@ from apps.servers.api.serializers import ServerSerializer
 from .authentications import InspectorJWTAuthentication
 from .permissions import InspectorPermission
 from .serializers import InspectorLogSerializer
-from ..models import Inspector, InspectorLog
+from ..models import Inspector, InspectedServer
 
 
 class ObtainTokenAPIView(APIView):
@@ -42,7 +42,7 @@ class InquiryServersAPIView(generics.ListAPIView):
 
 
 class InspectorLogAPIView(generics.CreateAPIView):
-    queryset = InspectorLog.objects.all()
+    queryset = InspectedServer.objects.all()
     authentication_classes = (InspectorJWTAuthentication,)
     permission_classes = (InspectorPermission,)
     serializer_class = InspectorLogSerializer

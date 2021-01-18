@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Inspector, InspectorLog
+from .models import Inspector, InspectedServer
 
 
 @admin.register(Inspector)
@@ -14,7 +14,7 @@ class InspectorModelAdmin(admin.ModelAdmin):
         return obj.get_jwt_token()
 
 
-@admin.register(InspectorLog)
+@admin.register(InspectedServer)
 class InspectedServerModelAdmin(admin.ModelAdmin):
     list_display = ('inspector', 'server', 'hash_key', 'is_active', 'created_time')
     search_fields = ('hash_key',)

@@ -32,7 +32,7 @@ class Server(models.Model):
     created_time = models.DateTimeField(_("created time"), auto_now_add=True)
     updated_time = models.DateTimeField(_("updated time"), auto_now=True)
     name = models.CharField(_('name'), max_length=120)
-    aws_status = models.CharField(max_length=10, choices=AWS_STATUS_CHOICES)
+    aws_status = models.CharField(max_length=10, choices=AWS_STATUS_CHOICES, editable=False)
     connection_status = models.CharField(
         max_length=11,
         choices=CONNECTION_STATUS_CHOICES,
@@ -62,13 +62,15 @@ class Server(models.Model):
         super(Server, self).save(*args, **kwargs)
 
 
-class ServerLog(models.Model):
+class PublicIP(models.Model):
     created_time = models.DateTimeField(_("created time"), auto_now_add=True)
     server = models.ForeignKey(Server, on_delete=models.PROTECT, related_name='server_logs')
     ip = models.GenericIPAddressField(protocol='IPv4')
 
     class Meta:
         db_table = 'servers_publicip'
+        verbose_name = _('Server Log')
+        verbose_name_plural = _('Server Logs')
 
     def __str__(self):
         return f"{self.ip} > server: {self.server_id}"

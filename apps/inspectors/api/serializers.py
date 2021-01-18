@@ -1,10 +1,10 @@
 from rest_framework import serializers
 
-from ..models import InspectorLog
+from ..models import InspectedServer
 
 
 class InspectorLogSerializer(serializers.ModelSerializer):
     class Meta:
-        model = InspectorLog
+        model = InspectedServer
         exclude = ('inspector',)
 

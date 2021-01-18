@@ -27,7 +27,7 @@ class Inspector(models.Model):
         return jwt_encode_handler(self.get_payload())
 
 
-class InspectorLog(models.Model):
+class InspectedServer(models.Model):
     created_time = models.DateTimeField(_('created time'), auto_now_add=True)
     inspector = models.ForeignKey(Inspector, on_delete=models.CASCADE, related_name='inspector_logs')
     server = models.ForeignKey(Server, on_delete=models.CASCADE, related_name='inspector_logs')
@@ -35,6 +35,8 @@ class InspectorLog(models.Model):
     is_active = models.BooleanField(_('active?'))
 
     class Meta:
+        verbose_name = _('Inspector Log')
+        verbose_name_plural = _('Inspector Logs')
         db_table = 'inspectors_inspectedserver'
 
     def __str__(self):
