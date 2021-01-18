@@ -19,7 +19,7 @@ class ProxyInlineAdmin(admin.TabularInline):
 
 
 @admin.register(PublicIP)
-class PublicIPAdmin(admin.ModelAdmin):
+class ServerLogAdmin(admin.ModelAdmin):
     list_display = ('ip', 'server', 'created_time')
     search_fields = ('ip', 'server__name')
     ordering = ('-created_time',)
@@ -67,7 +67,7 @@ class ServerAdmin(admin.ModelAdmin):
         server = Server.objects.get(id=server_id)
         state = get_instance_state(server)
         if state == Server.AWS_STATUS_RUNNING and (timezone.now() - server.updated_time).seconds > 300:
-            server.status = Server.AWS_STATUS_PENDING
+            server.aws_status = Server.AWS_STATUS_PENDING
             server.save()
             restart_server.delay(server_id)
         else:

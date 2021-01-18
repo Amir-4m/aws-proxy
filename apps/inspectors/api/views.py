@@ -8,7 +8,7 @@ from apps.servers.api.serializers import ServerSerializer
 
 from .authentications import InspectorJWTAuthentication
 from .permissions import InspectorPermission
-from .serializers import InspectedServerSerializer
+from .serializers import InspectorLogSerializer
 from ..models import Inspector, InspectedServer
 
 
@@ -32,17 +32,20 @@ class ObtainTokenAPIView(APIView):
 
 
 class InquiryServersAPIView(generics.ListAPIView):
-    queryset = Server.objects.filter(connection_status=Server.CONNECTION_STATUS_CHECK)
+    queryset = Server.objects.filter(
+        connection_status=Server.CONNECTION_STATUS_CHECK,
+        aws_status=Server.AWS_STATUS_RUNNING
+    )
     authentication_classes = (InspectorJWTAuthentication,)
     permission_classes = (InspectorPermission,)
     serializer_class = ServerSerializer
 
 
-class InspectedServersAPIView(generics.CreateAPIView):
+class InspectorLogAPIView(generics.CreateAPIView):
     queryset = InspectedServer.objects.all()
     authentication_classes = (InspectorJWTAuthentication,)
     permission_classes = (InspectorPermission,)
-    serializer_class = InspectedServerSerializer
+    serializer_class = InspectorLogSerializer
 
     def perform_create(self, serializer):
         inspector = Inspector.objects.get(id=self.request.auth['inspector_id'])
