@@ -37,7 +37,7 @@ class InquiryServersAPIView(generics.ListAPIView):
     queryset = Server.objects.filter(
         connection_status=Server.CONNECTION_STATUS_CHECK,
         aws_status=Server.AWS_STATUS_RUNNING,
-        updated_time__lt=timezone.now() - timezone.timedelta(minutes=10)
+        # updated_time__lt=timezone.now() - timezone.timedelta(minutes=10)
     )
     authentication_classes = (InspectorJWTAuthentication,)
     permission_classes = (InspectorPermission,)
