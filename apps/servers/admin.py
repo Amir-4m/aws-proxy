@@ -35,10 +35,10 @@ class ServerLogAdmin(admin.ModelAdmin):
 @admin.register(Server)
 class ServerAdmin(admin.ModelAdmin):
     list_display = (
-        'name', 'active_ip',
-        'is_enable', 'created_time',
-        'updated_time', 'aws_status',
-        'connection_status', 'server_actions'
+        'name', 'hash_key',
+        'created_time', 'updated_time',
+        'aws_status', 'connection_status', 
+        'is_enable', 'active_ip', 'server_actions'
     )
     list_filter = ('is_enable',)
     readonly_fields = ('hash_key',)

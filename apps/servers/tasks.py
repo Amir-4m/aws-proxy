@@ -19,6 +19,7 @@ def get_server_ip_async(server_id):
     if state == 'running':
         get_server_ip(server)
         server.aws_status = Server.AWS_STATUS_RUNNING
+        server.change_hash_key()
         server.save()
     elif state == 'pending':
         logger.warning(f'[message: state was not running in starting server]-[server_id: {server_id}]')
