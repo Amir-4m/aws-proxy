@@ -32,10 +32,7 @@ class ObtainTokenAPIView(APIView):
 
 
 class InquiryServersAPIView(generics.ListAPIView):
-    queryset = Server.objects.filter(
-        connection_status=Server.CONNECTION_STATUS_CHECK,
-        aws_status=Server.AWS_STATUS_RUNNING
-    )
+    queryset = Server.objects.live()
     authentication_classes = (InspectorJWTAuthentication,)
     permission_classes = (InspectorPermission,)
     serializer_class = ServerSerializer
