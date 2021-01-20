@@ -26,7 +26,7 @@ class ObtainTokenAPIView(APIView):
         service_id = request.data.get('inspector_id')
         service = get_object_or_404(
             Inspector,
-            id=service_id,
+            pk=service_id,
             is_enable=True,
         )
 
@@ -37,7 +37,6 @@ class InquiryServersAPIView(generics.ListAPIView):
     queryset = Server.objects.filter(
         connection_status=Server.CONNECTION_STATUS_CHECK,
         aws_status=Server.AWS_STATUS_RUNNING,
-        # updated_time__lt=timezone.now() - timezone.timedelta(minutes=10)
     )
     authentication_classes = (InspectorJWTAuthentication,)
     permission_classes = (InspectorPermission,)
