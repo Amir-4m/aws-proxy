@@ -5,6 +5,15 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.postgres.fields import JSONField
 
 
+class ServerManager(models.Manager):
+    def live(self):
+        return self.filter(
+            aws_status=Server.AWS_STATUS_RUNNING,
+            connection_status=Server.CONNECTION_STATUS_ACTIVE,
+            is_enable=True
+        )
+
+
 class Server(models.Model):
     AWS_STATUS_STOPPING = 'stopping'
     AWS_STATUS_STOPPED = 'stopped'
@@ -13,7 +22,6 @@ class Server(models.Model):
 
     CONNECTION_STATUS_ACTIVE = 'active'
     CONNECTION_STATUS_CHECK = 'check'
-    CONNECTION_STATUS_DEACTIVATED = 'deactivated'
 
     AWS_STATUS_CHOICES = [
         (AWS_STATUS_STOPPING, _('Stopping')),
@@ -25,7 +33,6 @@ class Server(models.Model):
     CONNECTION_STATUS_CHOICES = [
         (CONNECTION_STATUS_ACTIVE, _('Active')),
         (CONNECTION_STATUS_CHECK, _('Check')),
-        (CONNECTION_STATUS_DEACTIVATED, _('Deactivated')),
 
     ]
 
@@ -41,6 +48,7 @@ class Server(models.Model):
     is_enable = models.BooleanField(_('enabled?'))
     hash_key = models.UUIDField(default=uuid.uuid4, editable=False)
     properties = JSONField(_('properties'), default=dict)
+    objects = ServerManager()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
