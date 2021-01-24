@@ -76,8 +76,6 @@ def restart_server(server_id):
 def update_servers_to_check():
     servers = Server.objects.live().order_by('updated_time', '-pk')
     servers_range = servers.count() * (settings.UPDATED_SERVER_PERCENTAGE / 100)
-    if servers_range < 1:
-        servers_range = 1
     for server in servers[:math.ceil(servers_range)]:
         server.connection_status = Server.CONNECTION_STATUS_CHECK
         server.save()
