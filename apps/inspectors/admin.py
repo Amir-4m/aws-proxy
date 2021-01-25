@@ -27,3 +27,6 @@ class RegisterCodeModelAdmin(admin.ModelAdmin):
     list_display = ('code', 'inspector', 'created_time', 'updated_time')
     search_fields = ('code', 'inspector')
     list_filter = ('inspector',)
+
+    def has_change_permission(self, request, obj=None):
+        return False

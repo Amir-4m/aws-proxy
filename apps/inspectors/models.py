@@ -35,7 +35,7 @@ class Inspector(models.Model):
     # ]
     created_time = models.DateTimeField(_('created time'), auto_now_add=True)
     updated_time = models.DateTimeField(_('updated time'), auto_now=True)
-    name = models.CharField(_('name'), max_length=120)
+    name = models.CharField(_('name'), max_length=120, unique=True)
     # operator = models.CharField(_('operator'), max_length=3, choices=OPERATOR_CHOICES, default=OPERATOR_TCI)
     is_enable = models.BooleanField(_('enabled?'), default=True)
 
