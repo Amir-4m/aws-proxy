@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Inspector, InspectorLog
+from .models import Inspector, InspectorLog, RegisterCode
 
 
 @admin.register(Inspector)
@@ -19,3 +19,11 @@ class InspectedServerModelAdmin(admin.ModelAdmin):
     list_display = ('inspector', 'server', 'hash_key', 'is_active', 'created_time')
     search_fields = ('hash_key',)
     list_filter = ('server', 'is_active', 'inspector')
+
+
+@admin.register(RegisterCode)
+class RegisterCodeModelAdmin(admin.ModelAdmin):
+    change_list_template = "inspectors/admin/register_code_changelist.html"
+    list_display = ('code', 'inspector', 'created_time', 'updated_time')
+    search_fields = ('code', 'inspector')
+    list_filter = ('inspector',)
