@@ -1,11 +1,13 @@
 from celery.schedules import crontab
 from celery.task import periodic_task
+from django.db.models.functions import Coalesce
 from django.utils import timezone
 from django.conf import settings
 from django.db import transaction
+from django.db.models import Count
 
 from apps.servers.models import Server
-from .models import InspectorLog, Inspector
+from .models import InspectorLog, Inspector, ISPDetector
 from ..servers.tasks import restart_server
 
 
@@ -15,16 +17,21 @@ def check_server_connection_analyses():
         server_list = Server.objects.select_for_update().filter(connection_status=Server.CONNECTION_STATUS_CHECK,
                                                                 is_enable=True)
 
-        op_list = [(_op[0], Inspector.objects.filter(is_enable=True, operator=_op[0]).count()) for _op in
-                   Inspector.OPERATOR_CHOICES]
+        isp_list = list(ISPDetector.objects.filter(is_enable=True))
 
         for server in server_list:
             _restart = []
-            for op, inspector_counts in op_list:
-                inspected_servers = InspectorLog.objects.filter(hash_key=server.hash_key, inspector__operator=op)
+            for isp in isp_list:
+                _inspectors = InspectorLog.objects.filter(detected_isp=isp)
+                inspected_servers = _inspectors.filter(hash_key=server.hash_key)
+                inspector_count = _inspectors.filter(
+                    ip=server.active_ip()
+                ).aggregate(
+                    icount=Coalesce(Count('inspector_id', distinct=True), 0)
+                )['icount']
                 if inspected_servers.filter(is_active=True).exist():
                     _restart.append(False)
-                elif inspected_servers.filter(is_active=False).count() == inspector_counts:
+                elif inspected_servers.filter(is_active=False).count() >= 0.3 * inspector_count:
                     _restart.append(True)
                 else:
                     _restart.append(None)
