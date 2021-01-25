@@ -18,4 +18,4 @@ class InspectorModelAdmin(admin.ModelAdmin):
 class InspectedServerModelAdmin(admin.ModelAdmin):
     list_display = ('inspector', 'server', 'hash_key', 'is_active', 'created_time')
     search_fields = ('hash_key',)
-    list_filter = ('server', 'is_active', 'inspector', 'inspector__operator')
+    list_filter = ('server', 'is_active', 'inspector')

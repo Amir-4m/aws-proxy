@@ -58,6 +58,7 @@ class InspectorLog(models.Model):
     inspector = models.ForeignKey(Inspector, on_delete=models.CASCADE, related_name='inspector_logs')
     server = models.ForeignKey(Server, on_delete=models.CASCADE, related_name='inspector_logs')
     ip = models.CharField(_('ip'), max_length=15, null=True)
+    isp = models.ForeignKey(ISPDetector, null=True, blank=True, on_delete=models.CASCADE)
     hash_key = models.UUIDField(_('hash key'))
     is_active = models.BooleanField(_('active?'))
 
