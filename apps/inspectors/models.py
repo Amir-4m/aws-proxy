@@ -7,10 +7,36 @@ from apps.inspectors.utils.jwt import jwt_payload_handler, jwt_encode_handler
 from apps.servers.models import Server
 
 
-class Inspector(models.Model):
+class ISPDetector(models.Model):
     created_time = models.DateTimeField(_('created time'), auto_now_add=True)
     updated_time = models.DateTimeField(_('updated time'), auto_now=True)
-    name = models.CharField(_('name'), max_length=120)
+    title = models.CharField(_('ISP title'), max_length=40)
+    # proxy_type = models.PositiveSmallIntegerField(_('proxy type'), choices=TelProxy.PROXY_TYPES)
+    regex_pattern = models.TextField(_('regex pattern'))
+    is_enable = models.BooleanField(_('enabled?'), default=True)
+
+    class Meta:
+        verbose_name = _('ISP detector')
+        verbose_name_plural = _('ISP detectors')
+
+    def __str__(self):
+        return self.title
+
+
+class Inspector(models.Model):
+    # OPERATOR_TCI = 'tci'
+    # OPERATOR_MCI = 'mci'
+    # OPERATOR_MTN = 'mtn'
+    #
+    # OPERATOR_CHOICES = [
+    #     (OPERATOR_TCI, _('TCI')),
+    #     (OPERATOR_MCI, _('MCI')),
+    #     (OPERATOR_MTN, _('MTN')),
+    # ]
+    created_time = models.DateTimeField(_('created time'), auto_now_add=True)
+    updated_time = models.DateTimeField(_('updated time'), auto_now=True)
+    name = models.CharField(_('name'), max_length=120, unique=True)
+    # operator = models.CharField(_('operator'), max_length=3, choices=OPERATOR_CHOICES, default=OPERATOR_TCI)
     is_enable = models.BooleanField(_('enabled?'), default=True)
 
     def __str__(self):
@@ -31,6 +57,9 @@ class InspectorLog(models.Model):
     created_time = models.DateTimeField(_('created time'), auto_now_add=True)
     inspector = models.ForeignKey(Inspector, on_delete=models.CASCADE, related_name='inspector_logs')
     server = models.ForeignKey(Server, on_delete=models.CASCADE, related_name='inspector_logs')
+    ip = models.CharField(_('ip'), max_length=15, null=True, blank=True)
+    received_isp = models.CharField(_('received isp'), max_length=120, blank=True, null=True)
+    detected_isp = models.ForeignKey(ISPDetector, null=True, blank=True, on_delete=models.CASCADE, related_name='logs')
     hash_key = models.UUIDField(_('hash key'))
     is_active = models.BooleanField(_('active?'))
 
@@ -41,3 +70,10 @@ class InspectorLog(models.Model):
 
     def __str__(self):
         return f'{self.inspector} - {self.server}'
+
+
+class RegisterCode(models.Model):
+    created_time = models.DateTimeField(_('created time'), auto_now_add=True)
+    updated_time = models.DateTimeField(_('updated time'), auto_now=True)
+    code = models.CharField(_('code'), max_length=10, unique=True)
+    inspector = models.ForeignKey(Inspector, null=True, blank=True, on_delete=models.CASCADE, related_name='codes')

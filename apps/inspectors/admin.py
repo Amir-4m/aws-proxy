@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Inspector, InspectorLog
+from .models import Inspector, InspectorLog, RegisterCode
 
 
 @admin.register(Inspector)
@@ -25,3 +25,12 @@ class InspectedServerModelAdmin(admin.ModelAdmin):
 
     def has_change_permission(self, request, obj=None):
         return False
+
+
+@admin.register(RegisterCode)
+class RegisterCodeModelAdmin(admin.ModelAdmin):
+    change_list_template = "inspectors/admin/register_code_changelist.html"
+    list_display = ('code', 'inspector', 'created_time', 'updated_time')
+    search_fields = ('code', 'inspector__name')
+    list_filter = ('inspector',)
+    readonly_fields = ('inspector',)

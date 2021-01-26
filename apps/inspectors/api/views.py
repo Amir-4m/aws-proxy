@@ -10,8 +10,18 @@ from apps.servers.api.serializers import ServerSerializer
 
 from .authentications import InspectorJWTAuthentication
 from .permissions import InspectorPermission
-from .serializers import InspectorLogSerializer
+from .serializers import InspectorLogSerializer, RegisterSerializer
 from ..models import Inspector, InspectorLog
+
+
+class RegisterAPIView(APIView):
+    serializer_class = RegisterSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        instance = serializer.save()
+        return Response({"token": instance.get_jwt_token()})
 
 
 class ObtainTokenAPIView(APIView):

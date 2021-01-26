@@ -1,8 +1,10 @@
 import logging
+import math
 
 from celery import shared_task
 from celery.schedules import crontab
 from celery.task import periodic_task
+from django.conf import settings
 from django.db import transaction
 
 from .models import Server
@@ -73,10 +75,8 @@ def restart_server(server_id):
 
 @periodic_task(run_every=(crontab(minute='*/10')))
 def update_servers_to_check():
-    server = Server.objects.live().order_by(
-        'updated_time', 
-        '-pk'
-    ).first()
-    if server is not None:
+    servers = Server.objects.live().order_by('updated_time', '-pk')
+    servers_range = servers.count() * (settings.UPDATED_SERVER_PERCENTAGE / 100)
+    for server in servers[:math.ceil(servers_range)]:
         server.connection_status = Server.CONNECTION_STATUS_CHECK
         server.save()
