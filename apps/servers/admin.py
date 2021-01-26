@@ -22,7 +22,7 @@ class ProxyInlineAdmin(admin.TabularInline):
 class ServerLogAdmin(admin.ModelAdmin):
     list_display = ('ip', 'server', 'created_time')
     search_fields = ('ip', 'server__name')
-    ordering = ('-created_time',)
+    list_filter = ('server',)
     date_hierarchy = 'created_time'
 
     def has_add_permission(self, request):
