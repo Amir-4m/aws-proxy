@@ -13,14 +13,12 @@ class RegisterSerializer(serializers.Serializer):
     name = serializers.CharField()
 
     def validate_name(self, value):
-        if Inspector.objects.filter(name=value).exists():
-            raise ValidationError(_('inspector with this name exists!'))
-        return value
+        return value.lower()
 
     def create(self, validated_data):
         with transaction.atomic():
             code = RegisterCode.objects.select_for_update(of=("self",)).get(code=validated_data['code'].code)
-            inspector = Inspector.objects.create(name=validated_data['name'])
+            inspector, _c = Inspector.objects.get_or_create(name=validated_data['name'])
             code.inspector = inspector
             code.save()
         return inspector
