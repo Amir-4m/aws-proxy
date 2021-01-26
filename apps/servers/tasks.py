@@ -73,7 +73,7 @@ def restart_server(server_id):
             )
 
 
-@periodic_task(run_every=(crontab(minute='*/10')))
+@periodic_task(run_every=(crontab(minute='*')))
 def update_servers_to_check():
     servers = Server.objects.live().order_by('updated_time', '-pk')
     servers_range = servers.count() * (settings.UPDATED_SERVER_PERCENTAGE / 100)
