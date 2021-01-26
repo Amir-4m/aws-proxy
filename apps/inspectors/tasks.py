@@ -14,9 +14,7 @@ from ..servers.tasks import restart_server
 @periodic_task(run_every=(crontab(minute='*')))
 def check_server_connection_analyses():
     with transaction.atomic():
-        server_list = Server.objects.select_for_update().filter(connection_status=Server.CONNECTION_STATUS_CHECK,
-                                                                is_enable=True)
-
+        server_list = Server.objects.select_for_update().filter(connection_status=Server.CONNECTION_STATUS_CHECK, is_enable=True)
         isp_list = list(ISPDetector.objects.filter(is_enable=True))
 
         for server in server_list:
@@ -29,7 +27,7 @@ def check_server_connection_analyses():
                 ).aggregate(
                     icount=Coalesce(Count('inspector_id', distinct=True), 0)
                 )['icount']
-                if inspected_servers.filter(is_active=True).exist():
+                if inspected_servers.filter(is_active=True).exists():
                     _restart.append(False)
                 elif inspected_servers.filter(is_active=False).count() >= 0.3 * inspector_count:
                     _restart.append(True)

@@ -8,6 +8,7 @@ class ISPDetectorModelAdmin(admin.ModelAdmin):
     list_display = ('title', 'regex_pattern', 'is_enable')
     search_fields = ('title',)
     list_filter = ('is_enable',)
+    list_editable = ('is_enable',)
 
 
 @admin.register(Inspector)
