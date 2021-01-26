@@ -5,14 +5,14 @@ from .models import Inspector, InspectorLog, RegisterCode, ISPDetector
 
 @admin.register(ISPDetector)
 class ISPDetectorModelAdmin(admin.ModelAdmin):
-    list_display = ('title', 'is_enable', 'created_time', 'updated_time')
+    list_display = ('title', 'regex_pattern', 'is_enable')
     search_fields = ('title',)
     list_filter = ('is_enable',)
 
 
 @admin.register(Inspector)
 class InspectorModelAdmin(admin.ModelAdmin):
-    list_display = ('name', 'is_enable', 'created_time', 'updated_time', 'token')
+    list_display = ('name', 'is_enable', 'created_time', 'token')
     list_filter = ('is_enable',)
 
     # change_form_template = "testers/admin/change-form.html"
