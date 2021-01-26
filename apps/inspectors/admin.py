@@ -8,7 +8,7 @@ class InspectorModelAdmin(admin.ModelAdmin):
     list_display = ('name', 'is_enable', 'created_time', 'updated_time', 'token')
     list_filter = ('is_enable',)
 
-    change_form_template = "testers/admin/change-form.html"
+    # change_form_template = "testers/admin/change-form.html"
 
     def token(self, obj):
         return obj.get_jwt_token()
@@ -29,8 +29,9 @@ class InspectedServerModelAdmin(admin.ModelAdmin):
 
 @admin.register(RegisterCode)
 class RegisterCodeModelAdmin(admin.ModelAdmin):
-    change_list_template = "inspectors/admin/register_code_changelist.html"
     list_display = ('code', 'inspector', 'created_time', 'updated_time')
     search_fields = ('code', 'inspector__name')
     list_filter = ('inspector',)
     readonly_fields = ('inspector',)
+
+    change_list_template = "inspectors/admin/register_code_changelist.html"
