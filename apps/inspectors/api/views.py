@@ -24,29 +24,11 @@ class RegisterAPIView(APIView):
         return Response({"token": instance.get_jwt_token()})
 
 
-class ObtainTokenAPIView(APIView):
-
-    def post(self, request, *args, **kwargs):
-        """
-        API view that returns a token based on request inspector id.
-            body:
-                service_id: string/inspector id of specific service
-
-        """
-        service_id = request.data.get('inspector_id')
-        service = get_object_or_404(
-            Inspector,
-            pk=service_id,
-            is_enable=True,
-        )
-
-        return Response({"token": service.get_jwt_token()})
-
-
 class InquiryServersAPIView(generics.ListAPIView):
     queryset = Server.objects.filter(
         connection_status=Server.CONNECTION_STATUS_CHECK,
         aws_status=Server.AWS_STATUS_RUNNING,
+        is_enable=True
     )
     authentication_classes = (InspectorJWTAuthentication,)
     permission_classes = (InspectorPermission,)
