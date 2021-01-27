@@ -66,7 +66,7 @@ class ServerAdmin(admin.ModelAdmin):
     def restart(self, request, server_id):
         server = Server.objects.get(id=server_id)
         state = get_instance_state(server)
-        if state == Server.AWS_STATUS_RUNNING and (timezone.now() - server.updated_time).seconds > 300:
+        if state == Server.AWS_STATUS_RUNNING:
             server.aws_status = Server.AWS_STATUS_PENDING
             server.save()
             restart_server.delay(server_id)
