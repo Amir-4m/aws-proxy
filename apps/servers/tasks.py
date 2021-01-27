@@ -75,8 +75,9 @@ def restart_server(server_id):
 
 @periodic_task(run_every=(crontab(minute='*')))
 def update_servers_to_check():
+    servers_range = Server.objects.filter(is_enable=True).count() * (settings.UPDATED_SERVER_PERCENTAGE / 100)
+
     servers = Server.objects.live().order_by('updated_time', '-pk')
-    servers_range = servers.count() * (settings.UPDATED_SERVER_PERCENTAGE / 100)
     for server in servers[:math.ceil(servers_range)]:
         server.connection_status = Server.CONNECTION_STATUS_CHECK
         server.save()
