@@ -48,6 +48,7 @@ class Server(models.Model):
     is_enable = models.BooleanField(_('enabled?'))
     hash_key = models.UUIDField(default=uuid.uuid4, editable=False)
     properties = JSONField(_('properties'), default=dict)
+
     objects = ServerManager()
 
     def __init__(self, *args, **kwargs):
