@@ -29,7 +29,7 @@ def check_server_connection_analyses():
                 )['icount']
                 if inspected_servers.filter(is_active=True).exists():
                     _restart.append(False)
-                elif inspector_count > 0 and inspected_servers.filter(is_active=False).count() >= 0.3 * inspector_count:
+                elif inspector_count > 0 and inspected_servers.count() >= 0.3 * inspector_count:
                     _restart.append(True)
                 else:
                     _restart.append(None)
