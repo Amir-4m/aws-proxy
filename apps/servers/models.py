@@ -2,7 +2,7 @@ import uuid
 
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.postgres.fields import JSONField
+from django.contrib.postgres.fields import JSONField, ArrayField
 
 
 class ServerManager(models.Manager):
@@ -46,6 +46,7 @@ class Server(models.Model):
         default=CONNECTION_STATUS_ACTIVE
     )
     is_enable = models.BooleanField(_('enabled?'))
+    ports = ArrayField(models.CharField(max_length=6))
     hash_key = models.UUIDField(default=uuid.uuid4, editable=False)
     properties = JSONField(_('properties'), default=dict)
 
