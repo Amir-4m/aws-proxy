@@ -76,4 +76,4 @@ class RegisterCode(models.Model):
     created_time = models.DateTimeField(_('created time'), auto_now_add=True)
     updated_time = models.DateTimeField(_('updated time'), auto_now=True)
     code = models.CharField(_('code'), max_length=10, unique=True)
-    inspector = models.ForeignKey(Inspector, null=True, blank=True, on_delete=models.CASCADE, related_name='codes')
+    inspector = models.ForeignKey(Inspector, null=True, blank=True, on_delete=models.SET_NULL, related_name='codes')
