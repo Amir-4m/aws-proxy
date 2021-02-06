@@ -1,4 +1,5 @@
 from rest_framework import generics
+from rest_framework.renderers import JSONRenderer
 
 from apps.servers.models import Server
 
@@ -7,6 +8,7 @@ from ..models import Proxy
 
 
 class IPProxyAPIView(generics.ListAPIView):
+    renderer_classes = [JSONRenderer]
     queryset = Proxy.objects.has_ip().filter(
         is_enable=True,
         server__aws_status=Server.AWS_STATUS_RUNNING,
