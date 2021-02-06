@@ -10,7 +10,7 @@ class IPProxySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Proxy
-        fields = ('ip', 'prt', 'user', 'secret', 'sponser')
+        fields = ('ip', 'prt', 'secret')
 
     def to_representation(self, instance):
         data = super(IPProxySerializer, self).to_representation(instance)
