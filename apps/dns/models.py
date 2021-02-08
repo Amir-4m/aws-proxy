@@ -27,7 +27,7 @@ class DomainNameRecord(models.Model):
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['sub_domain_name', 'domain'], name='domain_address')
+            models.UniqueConstraint(fields=['sub_domain_name', 'domain', 'ip'], name='domain_address')
         ]
 
     def __str__(self):
