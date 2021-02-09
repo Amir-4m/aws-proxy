@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/1.11/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.11/ref/settings/
 """
+import ast
 import os
 from datetime import timedelta
 
@@ -204,3 +205,4 @@ SERVER_EXPIRY_TIME = config('SERVER_EXPIRY_MINUTE', default=60)
 UPDATED_SERVER_PERCENTAGE = config('UPDATED_SERVER_PERCENTAGE', default=10, cast=int)
 
 MAX_RANDOM_CODE = config('MAX_RANDOM_CODE', default=5, cast=int)
+CLEAR_INSPECTOR_LOGS_CRONTAB = ast.literal_eval(config("CLEAR_INSPECTOR_LOGS_CRONTAB"))

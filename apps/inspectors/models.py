@@ -1,6 +1,6 @@
 from datetime import timedelta
 
-from django.db import models
+from django.db import models, connection
 from django.utils.translation import ugettext_lazy as _
 
 from apps.inspectors.utils.jwt import jwt_payload_handler, jwt_encode_handler
@@ -70,6 +70,11 @@ class InspectorLog(models.Model):
 
     def __str__(self):
         return f'{self.inspector} - {self.server}'
+
+    @classmethod
+    def truncate(cls):
+        with connection.cursor() as cursor:
+            cursor.execute('TRUNCATE TABLE {}'.format(cls._meta.db_table))
 
 
 class RegisterCode(models.Model):
