@@ -3,21 +3,26 @@ import re
 from django.utils.translation import ugettext_lazy as _
 from django.db import transaction
 from rest_framework import serializers
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import ParseError
 
 from ..models import InspectorLog, ISPDetector, RegisterCode, Inspector
 
 
 class RegisterSerializer(serializers.Serializer):
-    code = serializers.SlugRelatedField(queryset=RegisterCode.objects.filter(inspector__isnull=True), slug_field='code')
+    code = serializers.CharField()
     name = serializers.CharField()
 
     def validate_name(self, value):
         return value.lower()
 
+    def validate_code(self, value):
+        if not RegisterCode.objects.filter(inspector__isnull=True, code=value).exists():
+            raise ParseError(_('code is invalid'))
+        return value
+
     def create(self, validated_data):
         with transaction.atomic():
-            code = RegisterCode.objects.select_for_update(of=("self",)).get(code=validated_data['code'].code)
+            code = RegisterCode.objects.select_for_update(of=("self",)).get(code=validated_data['code'])
             inspector, _c = Inspector.objects.get_or_create(name=validated_data['name'])
             code.inspector = inspector
             code.save()

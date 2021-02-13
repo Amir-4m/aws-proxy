@@ -1,3 +1,5 @@
+import logging
+
 from celery.schedules import crontab
 from celery.task import periodic_task
 from django.db.models.functions import Coalesce
@@ -9,6 +11,8 @@ from django.db.models import Count
 from apps.servers.models import Server
 from .models import InspectorLog, Inspector, ISPDetector
 from ..servers.tasks import restart_server
+
+logger = logging.getLogger(__name__)
 
 
 @periodic_task(run_every=(crontab(minute='*')))
@@ -41,3 +45,11 @@ def check_server_connection_analyses():
                 restart_server.delay(server.id)
             elif (timezone.now() - server.updated_time).total_seconds() > settings.SERVER_EXPIRY_TIME * 60:
                 restart_server.delay(server.id)
+
+
+@periodic_task(run_every=(crontab(**settings.CLEAR_INSPECTOR_LOGS_CRONTAB)))
+def clear_inspector_logs():
+    try:
+        InspectorLog.truncate()
+    except Exception as e:
+        logger.error(f'truncating inspector logs failed due to: {e}')
