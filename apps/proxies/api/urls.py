@@ -1,9 +1,8 @@
-from django.urls import path
+from rest_framework.routers import DefaultRouter
 
-from .views import IPProxyAPIView
+from .views import IPProxyViewSet
 
-app_name = 'proxies'
+router = DefaultRouter()
+router.register('ip-proxies', IPProxyViewSet)
 
-urlpatterns = [
-    path("ip-proxies/", IPProxyAPIView.as_view(), name="ip_proxies")
-]
+urlpatterns = router.urls

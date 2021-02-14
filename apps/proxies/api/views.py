@@ -1,13 +1,15 @@
-from rest_framework import generics
+from rest_framework import viewsets
+from rest_framework.decorators import action
 from rest_framework.renderers import JSONRenderer
+from rest_framework.response import Response
 
 from apps.servers.models import Server
 
-from .serializers import IPProxySerializer, IPProxySerializerV2
+from .serializers import IPProxySerializerV1, IPProxySerializerV2
 from ..models import Proxy
 
 
-class IPProxyAPIView(generics.ListAPIView):
+class IPProxyViewSet(viewsets.GenericViewSet):
     renderer_classes = [JSONRenderer]
     queryset = Proxy.objects.has_ip().filter(
         is_enable=True,
@@ -15,9 +17,14 @@ class IPProxyAPIView(generics.ListAPIView):
         server__is_enable=True,
         server__connection_status=Server.CONNECTION_STATUS_ACTIVE
     )
-    serializer_class = IPProxySerializer
+    serializer_class = IPProxySerializerV1
 
-    def get_serializer_class(self):
-        if self.request.version == 'v1':
-            return self.serializer_class
-        return IPProxySerializerV2
+    @action(methods=['get'], detail=False)
+    def version1(self, request, *args, **kwargs):
+        serializer = self.get_serializer(self.queryset, many=True)
+        return Response(serializer.data)
+
+    @action(methods=['get'], detail=False)
+    def version2(self, request, *args, **kwargs):
+        serializer = IPProxySerializerV2(self.queryset, many=True)
+        return Response(serializer.data)
