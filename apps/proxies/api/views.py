@@ -21,10 +21,10 @@ class IPProxyViewSet(viewsets.GenericViewSet):
 
     @action(methods=['get'], detail=False)
     def version1(self, request, *args, **kwargs):
-        serializer = self.get_serializer(self.queryset, many=True)
+        serializer = self.get_serializer(self.get_queryset(), many=True)
         return Response(serializer.data)
 
     @action(methods=['get'], detail=False)
     def version2(self, request, *args, **kwargs):
-        serializer = IPProxySerializerV2(self.queryset, many=True)
+        serializer = IPProxySerializerV2(self.get_queryset(), many=True)
         return Response(serializer.data)
