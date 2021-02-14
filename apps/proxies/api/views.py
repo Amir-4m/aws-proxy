@@ -3,7 +3,7 @@ from rest_framework.renderers import JSONRenderer
 
 from apps.servers.models import Server
 
-from .serializers import IPProxySerializer
+from .serializers import IPProxySerializer, IPProxySerializerV2
 from ..models import Proxy
 
 
@@ -16,3 +16,8 @@ class IPProxyAPIView(generics.ListAPIView):
         server__connection_status=Server.CONNECTION_STATUS_ACTIVE
     )
     serializer_class = IPProxySerializer
+
+    def get_serializer_class(self):
+        if self.request.version == 'v1':
+            return self.serializer_class
+        return IPProxySerializerV2

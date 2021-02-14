@@ -21,3 +21,14 @@ class IPProxySerializer(serializers.ModelSerializer):
             'sponser': True
         })
         return data
+
+
+class IPProxySerializerV2(serializers.ModelSerializer):
+    proxy = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Proxy
+        fields = ('id', 'proxy')
+
+    def get_proxy(self, obj):
+        return f"https://t.me/proxy?server={obj.host}&port={obj.port}&secret={obj.secret_key}"
