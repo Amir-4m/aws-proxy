@@ -41,8 +41,7 @@ def check_server_connection_analyses():
         """
 
         for server in server_list:
-            _restart = []
-            _inspectors = InspectorLog.objects.filter(hash_key=server.hash_key)
+            inspected_servers = InspectorLog.objects.filter(hash_key=server.hash_key)
             if inspected_servers.filter(is_active=False).exists():
                 restart_server.delay(server.id)
             elif (timezone.now() - server.updated_time).total_seconds() > settings.SERVER_EXPIRY_TIME * 60:
