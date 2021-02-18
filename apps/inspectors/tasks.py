@@ -19,8 +19,9 @@ logger = logging.getLogger(__name__)
 def check_server_connection_analyses():
     with transaction.atomic():
         server_list = Server.objects.select_for_update().filter(connection_status=Server.CONNECTION_STATUS_CHECK, is_enable=True)
-        isp_list = list(ISPDetector.objects.filter(is_enable=True))
 
+        """
+        isp_list = list(ISPDetector.objects.filter(is_enable=True))
         for server in server_list:
             _restart = []
             for isp in isp_list:
@@ -37,15 +38,18 @@ def check_server_connection_analyses():
                     _restart.append(True)
                 else:
                     _restart.append(None)
+        """
 
-            if all([r is False for r in _restart]):
-                server.connection_status = Server.CONNECTION_STATUS_ACTIVE
-                server.save()
-            elif any(_restart):
+        for server in server_list:
+            _restart = []
+            _inspectors = InspectorLog.objects.filter(hash_key=server.hash_key)
+            if inspected_servers.filter(is_active=False).exists():
                 restart_server.delay(server.id)
             elif (timezone.now() - server.updated_time).total_seconds() > settings.SERVER_EXPIRY_TIME * 60:
                 restart_server.delay(server.id)
-
+            elif inspected_servers.count() >= 3:
+                server.connection_status = Server.CONNECTION_STATUS_ACTIVE
+                server.save()
 
 @periodic_task(run_every=(crontab(**settings.CLEAR_INSPECTOR_LOGS_CRONTAB)))
 def clear_inspector_logs():
