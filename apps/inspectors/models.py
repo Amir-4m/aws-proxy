@@ -38,6 +38,7 @@ class Inspector(models.Model):
     name = models.CharField(_('name'), max_length=120, unique=True)
     # operator = models.CharField(_('operator'), max_length=3, choices=OPERATOR_CHOICES, default=OPERATOR_TCI)
     is_enable = models.BooleanField(_('enabled?'), default=True)
+    is_approved = models.BooleanField(_('approved?'), default=False)
 
     def __str__(self):
         return self.name
