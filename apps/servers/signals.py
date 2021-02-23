@@ -17,4 +17,4 @@ def check_public_ip(sender, instance, **kwargs):
         for dns_record in DomainNameRecord.objects.filter(ip=expired_ip):
             dns_record.ip = instance.ip
             dns_record.save()
-        Proxy.objects.has_ip().filter(server=instance.server).update(host=instance.ip)
+    Proxy.objects.has_ip().filter(server=instance.server).update(host=instance.ip)
