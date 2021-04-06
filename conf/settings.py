@@ -206,3 +206,4 @@ UPDATED_SERVER_PERCENTAGE = config('UPDATED_SERVER_PERCENTAGE', default=10, cast
 
 MAX_RANDOM_CODE = config('MAX_RANDOM_CODE', default=5, cast=int)
 CLEAR_INSPECTOR_LOGS_CRONTAB = ast.literal_eval(config("CLEAR_INSPECTOR_LOGS_CRONTAB"))
+AWS_PROXY = config('AWS_PROXY', default='', cast=str)
