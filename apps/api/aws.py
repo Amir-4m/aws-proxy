@@ -43,13 +43,11 @@ class AmazonWebServiceAPI(object):
                     'https': settings.AWS_PROXY,
             }
 
-        config = Config(**config_params)
-
         return boto3.client(
             'lightsail',
             aws_access_key_id=self.access_key,
             aws_secret_access_key=self.secret_key,
-            config=config
+            config=Config(**config_params)
         )
 
     def stop_server(self):
