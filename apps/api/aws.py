@@ -32,25 +32,22 @@ class AmazonWebServiceAPI(object):
 
         if settings.DEVEL:
             raise RuntimeError('your ip address country does not have permission to do this!')
-        if not settings.AWS_PROXY:
-            config = Config(
-                region_name=self.region,
-            )
-        else:
-            config = Config(
-                region_name=self.region,
-                proxies={
-                    'http': f'http://{settings.AWS_PROXY}',
-                    'https': f'https://{settings.AWS_PROXY}'
-                }
 
-            )
+        config_params = dict(
+            region_name=self.region
+        )
+
+        if settings.AWS_PROXY:
+            config_params['proxies'] = {
+                    'http': settings.AWS_PROXY,
+                    'https': settings.AWS_PROXY,
+            }
 
         return boto3.client(
             'lightsail',
             aws_access_key_id=self.access_key,
             aws_secret_access_key=self.secret_key,
-            config=config
+            config=Config(**config_params)
         )
 
     def stop_server(self):
