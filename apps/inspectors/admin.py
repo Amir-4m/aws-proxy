@@ -13,8 +13,8 @@ class ISPDetectorModelAdmin(admin.ModelAdmin):
 
 @admin.register(Inspector)
 class InspectorModelAdmin(admin.ModelAdmin):
-    list_display = ('name', 'is_enable', 'created_time', 'token')
-    list_filter = ('is_enable',)
+    list_display = ('name', 'is_enable', 'is_approved', 'created_time', 'token')
+    list_filter = ('is_enable', 'is_approved')
 
     # change_form_template = "testers/admin/change-form.html"
 

@@ -20,11 +20,10 @@ def check_server_connection_analyses():
     with transaction.atomic():
         server_list = Server.objects.select_for_update().filter(connection_status=Server.CONNECTION_STATUS_CHECK, is_enable=True)
         isp_list = list(ISPDetector.objects.filter(is_enable=True))
-
         for server in server_list:
             _restart = []
             for isp in isp_list:
-                _inspectors = InspectorLog.objects.filter(detected_isp=isp)
+                _inspectors = InspectorLog.objects.filter(detected_isp=isp, inspector__is_approved=True)
                 inspected_servers = _inspectors.filter(hash_key=server.hash_key)
                 inspector_count = _inspectors.filter(
                     ip=server.active_ip()
