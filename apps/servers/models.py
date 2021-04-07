@@ -2,6 +2,7 @@ import uuid
 
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django.db import models, connection
 from django.contrib.postgres.fields import JSONField, ArrayField
 
 
