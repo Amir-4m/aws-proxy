@@ -87,3 +87,8 @@ class ServerLog(models.Model):
 
     def __str__(self):
         return f"{self.ip} > server: {self.server_id}"
+
+    @classmethod
+    def truncate(cls):
+        with connection.cursor() as cursor:
+            cursor.execute('TRUNCATE TABLE {}'.format(cls._meta.db_table))

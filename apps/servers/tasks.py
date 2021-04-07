@@ -7,7 +7,7 @@ from celery.task import periodic_task
 from django.conf import settings
 from django.db import transaction
 
-from .models import Server
+from .models import Server, ServerLog
 from .utils import start_server, stop_server, get_server_ip, get_instance_state
 
 logger = logging.getLogger(__name__)
@@ -81,3 +81,11 @@ def update_servers_to_check():
     for server in servers[:math.ceil(servers_range)]:
         server.connection_status = Server.CONNECTION_STATUS_CHECK
         server.save()
+
+
+@periodic_task(run_every=(crontab(**settings.CLEAR_INSPECTOR_LOGS_CRONTAB)))
+def clear_server_logs():
+    try:
+        ServerLog.truncate()
+    except Exception as e:
+        logger.error(f'truncating server logs failed due to: {e}')
