@@ -1,6 +1,7 @@
 from django.db import models
 
 from django.utils.translation import ugettext_lazy as _
+from django.db import models, connection
 
 
 class DomainZone(models.Model):
@@ -52,6 +53,11 @@ class DNSUpdateLog(models.Model):
 
     class Meta:
         verbose_name = 'DNS Update Log'
+
+    @classmethod
+    def truncate(cls):
+        with connection.cursor() as cursor:
+            cursor.execute('TRUNCATE TABLE {}'.format(cls._meta.db_table))
 
     def __str__(self):
         return f"{self.domain_record} - {self.ip}"

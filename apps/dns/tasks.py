@@ -2,6 +2,8 @@ import logging
 import requests
 
 from celery import shared_task
+from celery.schedules import crontab
+from celery.task import periodic_task
 
 from django.conf import settings
 from .models import DomainNameRecord, DNSUpdateLog
@@ -105,3 +107,11 @@ def cloudflare_delete(objc_id, domain, ip, dns_record, zone_id):
         domain_record_id=objc_id,
         api_response=response_data
     )
+
+
+@periodic_task(run_every=(crontab(**settings.CLEAR_DNS_LOGS_CRONTAB)))
+def clear_dns_logs():
+    try:
+        DNSUpdateLog.truncate()
+    except Exception as e:
+        logger.error(f'truncating dns logs failed due to: {e}')
