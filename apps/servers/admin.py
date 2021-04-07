@@ -13,6 +13,13 @@ from .utils import get_instance_state
 from .tasks import restart_server
 
 
+def disable_servers(modeladmin, request, queryset):
+    queryset.update(is_enable=False)
+
+
+disable_servers.short_description = _("Disable selected servers")
+
+
 class ProxyInlineAdmin(admin.TabularInline):
     model = Proxy
     extra = 1
@@ -37,7 +44,7 @@ class ServerAdmin(admin.ModelAdmin):
     list_display = (
         'name', 'hash_key',
         'created_time', 'updated_time',
-        'aws_status', 'connection_status', 
+        'aws_status', 'connection_status',
         'is_enable', 'active_ip', 'server_actions'
     )
     list_filter = ('is_enable',)
@@ -45,6 +52,9 @@ class ServerAdmin(admin.ModelAdmin):
     search_fields = ('name', 'active_ip')
     form = ServerModelAdminForm
     inlines = (ProxyInlineAdmin,)
+    actions = (
+        disable_servers,
+    )
 
     def get_urls(self):
         urls = super().get_urls()
