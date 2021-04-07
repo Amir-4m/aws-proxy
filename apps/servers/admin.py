@@ -20,6 +20,13 @@ def disable_servers(modeladmin, request, queryset):
 disable_servers.short_description = _("Disable selected servers")
 
 
+def enable_servers(modeladmin, request, queryset):
+    queryset.update(is_enable=True)
+
+
+disable_servers.short_description = _("Enable selected servers")
+
+
 class ProxyInlineAdmin(admin.TabularInline):
     model = Proxy
     extra = 1
@@ -54,6 +61,7 @@ class ServerAdmin(admin.ModelAdmin):
     inlines = (ProxyInlineAdmin,)
     actions = (
         disable_servers,
+        enable_servers
     )
 
     def get_urls(self):
