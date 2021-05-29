@@ -1,4 +1,3 @@
-from django.utils import timezone
 from django.contrib import admin, messages
 from django.shortcuts import redirect
 from django.urls import path, reverse
@@ -48,6 +47,7 @@ class ServerLogAdmin(admin.ModelAdmin):
 
 @admin.register(Server)
 class ServerAdmin(admin.ModelAdmin):
+    change_form_template = "servers/admin/change-form.html"
     list_display = (
         'name', 'hash_key',
         'created_time', 'updated_time',
