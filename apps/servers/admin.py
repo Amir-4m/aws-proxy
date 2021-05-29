@@ -47,7 +47,7 @@ class ServerLogAdmin(admin.ModelAdmin):
 
 @admin.register(Server)
 class ServerAdmin(admin.ModelAdmin):
-    change_form_template = "servers/admin/change-form.html"
+    save_as = True
     list_display = (
         'name', 'hash_key',
         'created_time', 'updated_time',
